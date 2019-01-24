@@ -1,0 +1,60 @@
+.plot rect {
+  stroke: white;
+}
+
+text {
+  font-family: Calibri;
+}
+
+rect.label {
+  stroke: transparent;
+  rx: 5px;
+}
+
+text.label {
+  fill: white;
+  text-shadow: #000 0px 0px 4px;
+  -webkit-font-smoothing: antialiased;
+}
+
+rect.labelSum {
+  stroke: grey;
+  fill: white;
+  rx: 5px;
+}
+
+.yAxis path {
+  stroke: transparent;
+}
+
+.yAxis line {
+  stroke: transparent;
+}
+
+.xAxis path {
+  stroke: grey;
+  opacity: 0.2;
+}
+
+.xAxis line {
+  stroke: grey;
+  opacity: 0.2;
+}
+
+.grid path {
+  stroke: transparent;
+}
+
+.grid .tick line {
+  stroke: grey;
+  opacity: 0.5;
+}
+
+.axis text {
+  font-size: 12px;
+}
+
+.xAxis {
+  position: fixed;
+  z-index: 999;
+}
