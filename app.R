@@ -4,31 +4,27 @@ library(dplyr)
 library(r2d3)
 library(DT)
 
-data <- read.csv('Zeszyt1.csv', sep = ';') %>%
+data <-
+  read.csv('data.csv') %>%
   as_tibble()
 
 ui <- fluidPage(
-  
-  titlePanel('Rodzaje uczelni wyższych'),
+  theme = 'style.css',
+  titlePanel('Bar plot with totals and repeling labels'),
   sidebarLayout(
     sidebarPanel(
-      h3('Filtry uczelni'),
+      h3('Filters'),
       checkboxGroupInput(
-        inputId = 'rodzajUcz',
-        label = 'Rodzaj uczelni',
-        choices = c('publiczna', 'niepubliczna', 'kościelna'),
-        selected = c('publiczna', 'niepubliczna', 'kościelna')
+        inputId = 'group',
+        label = 'Group',
+        choices = data$group %>% unique(),
+        selected = data$group %>% unique()
       ),
       checkboxGroupInput(
-        inputId = 'profilUcz',
-        label = 'Profil uczelni',
-        choices = c('akademicka', 'zawodowa'),
-        selected = c('akademicka', 'zawodowa')
-      ),
-      radioButtons(
-        inputId = 'typ',
-        label = 'Kategorie wykresu',
-        choices = c('rodzaj', 'profil')
+        inputId = 'type',
+        label = 'Type',
+        choices = data$type %>% unique(),
+        selected = data$type %>% unique()
       )
     ),
     mainPanel(
@@ -41,14 +37,12 @@ server <- function(input, output) {
 
   data_filtered <- reactive({
     data %>%
-      mutate(n = if_else(rodzaj %in% input$rodzajUcz & profil %in% input$profilUcz, n, 0L)) %>%
-      select(Rok, input$typ, label, n) %>%
-      rename_at(2, ~'typ') %>%
-      group_by(Rok, typ, label) %>%
-      summarise_at(4, sum) %>%
+      mutate(n = if_else(group %in% input$group & type %in% input$type, n, 0L)) %>%
+      select(-type) %>%
+      group_by(year, group) %>%
+      summarise_all(sum) %>%
       ungroup() %>%
-      mutate(typ = typ %>% fct_rev()) %>%
-      arrange(typ)
+      mutate(group = group %>% fct_rev())
   })
   
   output$plot <- renderD3({
